@@ -5,7 +5,7 @@ import { isAddress, isHex, parseEther } from 'viem';
  * Arbitrary for Ethereum addresses
  * Generates valid Ethereum addresses (0x followed by 40 hex characters)
  */
-export const addressArbitrary = fc.hexaString({ minLength: 40, maxLength: 40 })
+export const addressArbitrary = fc.stringMatching(/^[0-9a-f]{40}$/)
   .map(h => `0x${h}` as `0x${string}`)
   .filter(addr => isAddress(addr));
 
@@ -25,13 +25,13 @@ export const blockTagArbitrary = fc.oneof(
  * Arbitrary for block numbers
  * Generates valid block numbers as bigints
  */
-export const blockNumberArbitrary = fc.bigUintN(64);
+export const blockNumberArbitrary = fc.bigInt({ min: 0n, max: 2n ** 64n - 1n });
 
 /**
  * Arbitrary for transaction hashes
  * Generates valid transaction hashes (0x followed by 64 hex characters)
  */
-export const hashArbitrary = fc.hexaString({ minLength: 64, maxLength: 64 })
+export const hashArbitrary = fc.stringMatching(/^[0-9a-f]{64}$/)
   .map(h => `0x${h}` as `0x${string}`)
   .filter(hash => isHex(hash) && hash.length === 66);
 
@@ -94,7 +94,7 @@ export const transaction1559Arbitrary = fc.record({
  * Arbitrary for hex data
  * Generates valid hex data (0x followed by an even number of hex characters)
  */
-export const hexDataArbitrary = fc.hexaString()
+export const hexDataArbitrary = fc.stringMatching(/^[0-9a-f]*$/)
   .map(h => h.length % 2 === 0 ? `0x${h}` : `0x${h}0` as `0x${string}`);
 
 /**
